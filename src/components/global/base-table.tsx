@@ -39,6 +39,12 @@ class BaseTable extends Component<BaseTableProps, BaseTableState> {
     };
   }
 
+  componentDidUpdate(prevProps: BaseTableProps) {
+    if (prevProps.queryState !== this.props.queryState) {
+      this.setState({ currentPage: 1 });
+    }
+  }
+
   renderTableHeaders() {
     const { headers } = this.props;
     return (
