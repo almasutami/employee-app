@@ -1,7 +1,7 @@
 import React, { ChangeEvent, Component } from "react";
 
 interface BaseInputProps {
-  label: string;
+  label?: string;
   value: string;
   placeholder?: string;
   onChange: (value: string) => void;
@@ -18,9 +18,10 @@ class BaseInput extends Component<BaseInputProps> {
 
     return (
       <div>
-        <label>{label}</label>
+        {label && <label>{label}</label>}
         <input
-          className="form-control"
+          className="rounded border p-2 "
+          style={{ minWidth: "240px" }}
           type="text"
           value={value}
           placeholder={placeholder}
