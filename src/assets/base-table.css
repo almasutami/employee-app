@@ -1,0 +1,23 @@
+.custom-disabled {
+  background-color: #d5d5d5;
+  color: #525252;
+}
+
+.custom-disabled:hover {
+  background-color: #d5d5d5;
+  color: #525252;
+  cursor: pointer;
+}
+
+.custom-active {
+  background-color: #525252;
+  color: white;
+}
+.custom-active:hover {
+  background-color: #525252;
+  color: white;
+}
+
+.custom-pagination:hover {
+  cursor: pointer;
+}
