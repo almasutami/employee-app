@@ -1,5 +1,6 @@
 import React from "react";
 import BaseTable from "../components/global/base-table.tsx";
+import EditEmployee from "../components/employee/edit-employee.tsx";
 import employeeData from "../data/employee.json";
 
 export interface Employee {
@@ -34,11 +35,20 @@ class EmployeeListing extends React.Component {
   fetchEmployees = () => {
     let filteredEmployees = employeeData.employees as Employee[];
 
+    console.log(`search for ${this.state.searchQuery}`);
+
     if (this.state.searchQuery) {
-      filteredEmployees = filteredEmployees.filter((employee) =>
-        employee.name
-          .toLowerCase()
-          .includes(this.state.searchQuery.toLowerCase())
+      filteredEmployees = filteredEmployees.filter(
+        (employee) =>
+          employee.name
+            .toLowerCase()
+            .includes(this.state.searchQuery.toLowerCase()) ||
+          employee.id
+            ?.toString()
+            .includes(this.state.searchQuery.toLowerCase()) ||
+          employee.email
+            .toLowerCase()
+            .includes(this.state.searchQuery.toLowerCase())
       );
     }
 
@@ -81,44 +91,10 @@ class EmployeeListing extends React.Component {
         />
 
         {this.state.isEditModalOpen && (
-          <div
-            className="modal"
-            tabIndex={-1}
-            role="dialog"
-            style={{ display: "block", backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-          >
-            <div className="modal-dialog" role="document">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">
-                    Edit {`${this.state.employeeToEdit?.name}`}
-                  </h5>
-                  <button
-                    type="button"
-                    className="close"
-                    onClick={this.onCloseEditModal}
-                  >
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div className="modal-body">
-                  Name, Email and Active status input fields here
-                </div>
-                <div className="modal-footer">
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    onClick={this.onCloseEditModal}
-                  >
-                    Close
-                  </button>
-                  <button type="button" className="btn btn-primary">
-                    Save changes
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+          <EditEmployee
+            employee={this.state.employeeToEdit}
+            onClose={this.onCloseEditModal}
+          />
         )}
       </div>
     );

@@ -17,16 +17,22 @@ class BaseInput extends Component<BaseInputProps> {
     const { label, value, placeholder } = this.props;
 
     return (
-      <div>
-        {label && <label>{label}</label>}
-        <input
-          className="rounded border p-2 "
-          style={{ minWidth: "240px" }}
-          type="text"
-          value={value}
-          placeholder={placeholder}
-          onChange={this.handleChange}
-        />
+      <div className="d-flex flex-column my-2">
+        {label && (
+          <div className="fw-bolder" style={{ width: "100%" }}>
+            <label>{label}</label>
+          </div>
+        )}
+        <div style={{ width: "100%" }}>
+          <input
+            className="rounded border p-2"
+            style={{ minWidth: "240px", width: "100%" }}
+            type="text"
+            value={value}
+            placeholder={placeholder}
+            onChange={this.handleChange}
+          />
+        </div>
       </div>
     );
   }

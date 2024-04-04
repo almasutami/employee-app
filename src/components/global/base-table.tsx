@@ -78,7 +78,6 @@ class BaseTable extends Component<BaseTableProps, BaseTableState> {
     return paginatedData.map((row, rowIndex) => (
       <tr key={rowIndex}>
         {headers.map((header, index) => {
-          console.log(header.key, row[header.key]);
           if (header.label === "Actions") {
             return (
               <td key={index}>
