@@ -76,8 +76,34 @@ class BaseTable extends Component<BaseTableProps, BaseTableState> {
     return paginatedData.map((row, rowIndex) => (
       <tr key={rowIndex}>
         {headers.map((header, index) => {
-          if (header.key === "Actions") {
+          console.log(header.key, row[header.key]);
+          if (header.label === "Actions") {
             return <td key={index}>Button</td>;
+          }
+          if (header.key === "isActive") {
+            if (row[header.key]) {
+              return (
+                <td key={index}>
+                  <span
+                    style={{ fontSize: "14px" }}
+                    className="px-2 py-1 text-white bg-success rounded"
+                  >
+                    Active
+                  </span>
+                </td>
+              );
+            } else {
+              return (
+                <td key={index}>
+                  <span
+                    style={{ fontSize: "14px" }}
+                    className="px-2 py-1 text-white bg-danger rounded"
+                  >
+                    Inactive
+                  </span>
+                </td>
+              );
+            }
           } else {
             return <td key={index}>{row[header.key]}</td>;
           }
