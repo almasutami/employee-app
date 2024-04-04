@@ -47,9 +47,13 @@ class BaseTable extends Component<BaseTableProps, BaseTableState> {
 
     return paginatedData.map((row, rowIndex) => (
       <tr key={rowIndex}>
-        {headers.map((header, index) => (
-          <td key={index}>{row[header.key]}</td>
-        ))}
+        {headers.map((header, index) => {
+          if (header.key === "Actions") {
+            return <td key={index}>Button</td>;
+          } else {
+            return <td key={index}>{row[header.key]}</td>;
+          }
+        })}
       </tr>
     ));
   }
@@ -64,17 +68,41 @@ class BaseTable extends Component<BaseTableProps, BaseTableState> {
     );
 
     return (
-      <div>
+      <ul className="pagination">
+        <li
+          className="page-link"
+          onClick={() => {
+            if (currentPage > 1) {
+              this.goToPage(currentPage - 1);
+            }
+          }}
+        >
+          Previous
+        </li>
         {pageNumbers.map((pageNumber) => (
-          <button
+          <li
+            className="page-link"
             key={pageNumber}
-            onClick={() => this.goToPage(pageNumber)}
-            disabled={currentPage === pageNumber}
+            onClick={() => {
+              if (currentPage !== pageNumber) {
+                this.goToPage(pageNumber);
+              }
+            }}
           >
             {pageNumber}
-          </button>
+          </li>
         ))}
-      </div>
+        <li
+          className="page-link"
+          onClick={() => {
+            if (currentPage < totalPages) {
+              this.goToPage(currentPage + 1);
+            }
+          }}
+        >
+          Next
+        </li>
+      </ul>
     );
   }
 
@@ -85,7 +113,7 @@ class BaseTable extends Component<BaseTableProps, BaseTableState> {
   render() {
     return (
       <div>
-        <table>
+        <table className="table">
           <thead>{this.renderTableHeaders()}</thead>
           <tbody>{this.renderTableData()}</tbody>
         </table>

@@ -38,14 +38,14 @@
     },
     {
       "id": 7,
-      "name": "Nana Smith",
-      "email": "nana@ayp-group.com",
+      "name": "Jonathan Smith",
+      "email": "jonathan@ayp-group.com",
       "isActive": false
     },
     {
       "id": 8,
-      "name": "Charles Smith",
-      "email": "charles@ayp-group.com",
+      "name": "Jacob Smith",
+      "email": "jacob@ayp-group.com",
       "isActive": true
     },
     {
@@ -58,6 +58,12 @@
       "id": 10,
       "name": "Max Smith",
       "email": "max@ayp-group.com",
+      "isActive": true
+    },
+    {
+      "id": 11,
+      "name": "Jeremiah Smith",
+      "email": "jeremiah@ayp-group.com",
       "isActive": true
     }
   ]
