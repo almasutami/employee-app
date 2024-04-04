@@ -1,16 +1,24 @@
 import React from "react";
 // import "../assets/styles/employee-list.css";
 import employeeData from "../data/employee.json";
-import BaseInput from "../components/global/base-input";
+import BaseInput from "../components/global/base-input.tsx";
+import BaseTable from "../components/global/base-table.tsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
-interface Employee {
+export interface Employee {
   id: number;
   name: string;
   email: string;
   isActive: boolean;
 }
+
+const employeeTableHeaders = [
+  { label: "EmployeeID", key: "id" },
+  { label: "Name", key: "name" },
+  { label: "Email", key: "email" },
+  { label: "Active status", key: "isActive" },
+];
 
 class EmployeeListing extends React.Component {
   state = {
@@ -85,16 +93,12 @@ class EmployeeListing extends React.Component {
         <div className={`d-flex flex-row justify-content-end mx-2`}></div>
         {/* employees */}
         <div className={`border shadow-sm mx-4 my-3 p-4`}>
-          <div className="py-2">
-            <h1>Employee List</h1>
+          <div>
+            <BaseTable
+              headers={employeeTableHeaders}
+              data={this.state.employees}
+            />
           </div>
-          {this.state.employees?.map((employee) =>
-            employee?.id ? (
-              <div key={employee.id} className="d-flex flex-col flex-wrap">
-                {employee.id} {employee.name}
-              </div>
-            ) : null
-          )}
         </div>
       </div>
     );
