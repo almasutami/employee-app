@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronLeft,
   faChevronRight,
+  faPencil,
 } from "@fortawesome/free-solid-svg-icons";
 import "../../assets/base-table.css";
 import BaseInputSearch from "./base-input-search.tsx";
@@ -25,6 +26,7 @@ interface BaseTableProps {
   title: string;
   description: string;
   onQueryChange: (query: string) => void;
+  onEditRow: (row: any) => void;
 }
 
 interface BaseTableState {
@@ -57,7 +59,7 @@ class BaseTable extends Component<BaseTableProps, BaseTableState> {
   }
 
   renderTableData() {
-    const { data, headers, pageSize, objectName } = this.props;
+    const { data, headers, pageSize, objectName, onEditRow } = this.props;
     const { currentPage } = this.state;
     const startIndex = (currentPage - 1) * pageSize;
     const endIndex = startIndex + pageSize;
@@ -78,7 +80,21 @@ class BaseTable extends Component<BaseTableProps, BaseTableState> {
         {headers.map((header, index) => {
           console.log(header.key, row[header.key]);
           if (header.label === "Actions") {
-            return <td key={index}>Button</td>;
+            return (
+              <td key={index}>
+                <button
+                  className="rounded"
+                  style={{
+                    background: "inherit",
+                    border: "0",
+                    color: "#525252",
+                  }}
+                  onClick={() => onEditRow(row)}
+                >
+                  <FontAwesomeIcon size="sm" icon={faPencil} />
+                </button>
+              </td>
+            );
           }
           if (header.key === "isActive") {
             if (row[header.key]) {

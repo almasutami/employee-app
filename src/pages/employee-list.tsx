@@ -23,6 +23,8 @@ class EmployeeListing extends React.Component {
     currentPage: 1,
     searchQuery: "",
     isActiveFilter: null as boolean | null,
+    isEditModalOpen: false,
+    employeeToEdit: null as Employee | null,
   };
 
   inputHandler = (name: string, value: string) => {
@@ -43,6 +45,15 @@ class EmployeeListing extends React.Component {
     this.setState({ employees: filteredEmployees });
   };
 
+  onEditRow = (row: Employee) => {
+    this.setState({ isEditModalOpen: true });
+    this.setState({ employeeToEdit: row });
+  };
+
+  onCloseEditModal = () => {
+    this.setState({ isEditModalOpen: false });
+  };
+
   componentDidMount() {
     this.fetchEmployees();
   }
@@ -56,16 +67,60 @@ class EmployeeListing extends React.Component {
 
   render() {
     return (
-      <BaseTable
-        title="Employee Listing"
-        description="View and edit your employee here"
-        headers={employeeTableHeaders}
-        data={this.state.employees}
-        queryState={this.state.searchQuery}
-        onQueryChange={(query) => this.inputHandler("searchQuery", query)}
-        pageSize={5}
-        objectName="employee"
-      />
+      <div>
+        <BaseTable
+          title="Employee Listing"
+          description="View and edit your employee here"
+          headers={employeeTableHeaders}
+          data={this.state.employees}
+          onEditRow={(row: Employee) => this.onEditRow(row)}
+          queryState={this.state.searchQuery}
+          onQueryChange={(query) => this.inputHandler("searchQuery", query)}
+          pageSize={5}
+          objectName="employee"
+        />
+
+        {this.state.isEditModalOpen && (
+          <div
+            className="modal"
+            tabIndex={-1}
+            role="dialog"
+            style={{ display: "block", backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+          >
+            <div className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">
+                    Edit {`${this.state.employeeToEdit?.name}`}
+                  </h5>
+                  <button
+                    type="button"
+                    className="close"
+                    onClick={this.onCloseEditModal}
+                  >
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div className="modal-body">
+                  Name, Email and Active status input fields here
+                </div>
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={this.onCloseEditModal}
+                  >
+                    Close
+                  </button>
+                  <button type="button" className="btn btn-primary">
+                    Save changes
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     );
   }
 }
