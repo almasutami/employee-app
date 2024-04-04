@@ -1,5 +1,4 @@
 import React from "react";
-import BaseInput from "../components/global/base-input.tsx";
 import BaseTable from "../components/global/base-table.tsx";
 import employeeData from "../data/employee.json";
 
@@ -22,8 +21,7 @@ class EmployeeListing extends React.Component {
   state = {
     employees: [] as Employee[],
     currentPage: 1,
-    nameQuery: "",
-    emailQuery: "",
+    searchQuery: "",
     isActiveFilter: null as boolean | null,
   };
 
@@ -34,9 +32,11 @@ class EmployeeListing extends React.Component {
   fetchEmployees = () => {
     let filteredEmployees = employeeData.employees as Employee[];
 
-    if (this.state.nameQuery) {
+    if (this.state.searchQuery) {
       filteredEmployees = filteredEmployees.filter((employee) =>
-        employee.name.toLowerCase().includes(this.state.nameQuery.toLowerCase())
+        employee.name
+          .toLowerCase()
+          .includes(this.state.searchQuery.toLowerCase())
       );
     }
 
@@ -48,7 +48,7 @@ class EmployeeListing extends React.Component {
   }
 
   componentDidUpdate(_, prevState) {
-    if (prevState.nameQuery !== this.state.nameQuery) {
+    if (prevState.searchQuery !== this.state.searchQuery) {
       this.setState({ currentPage: 1 });
       this.fetchEmployees();
     }
@@ -56,33 +56,16 @@ class EmployeeListing extends React.Component {
 
   render() {
     return (
-      <div>
-        <div
-          className={`filter d-flex flex-wrap justify-content-between px-4 py-2 flex-row align-items-center`}
-        >
-          <div>
-            <BaseInput
-              label="Name"
-              placeholder="Filter by name"
-              value={this.state.nameQuery}
-              onChange={(value: string) =>
-                this.inputHandler("nameQuery", value)
-              }
-            />
-          </div>
-        </div>
-        <div className={`d-flex flex-row justify-content-end mx-2`}></div>
-        {/* employees */}
-        <div className={`border shadow-sm mx-4 my-3 p-4`}>
-          <div>
-            <BaseTable
-              headers={employeeTableHeaders}
-              data={this.state.employees}
-              pageSize={5}
-            />
-          </div>
-        </div>
-      </div>
+      <BaseTable
+        title="Employee Listing"
+        description="View and edit your employee here"
+        headers={employeeTableHeaders}
+        data={this.state.employees}
+        queryState={this.state.searchQuery}
+        onQueryChange={(query) => this.inputHandler("searchQuery", query)}
+        pageSize={5}
+        objectName="employee"
+      />
     );
   }
 }
