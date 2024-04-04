@@ -20,6 +20,7 @@ class BaseInput extends Component<BaseInputProps> {
       <div>
         <label>{label}</label>
         <input
+          className="form-control"
           type="text"
           value={value}
           placeholder={placeholder}
