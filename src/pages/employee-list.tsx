@@ -14,7 +14,7 @@ export interface Employee {
 }
 
 const employeeTableHeaders = [
-  { label: "EmployeeID", key: "id" },
+  { label: "Employee ID", key: "id" },
   { label: "Name", key: "name" },
   { label: "Email", key: "email" },
   { label: "Active status", key: "isActive" },
@@ -97,6 +97,7 @@ class EmployeeListing extends React.Component {
             <BaseTable
               headers={employeeTableHeaders}
               data={this.state.employees}
+              pageSize={5}
             />
           </div>
         </div>

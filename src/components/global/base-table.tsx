@@ -12,9 +12,21 @@ interface Header {
 interface BaseTableProps {
   headers: Header[];
   data: RowData[];
+  pageSize: number;
 }
 
-class BaseTable extends Component<BaseTableProps> {
+interface BaseTableState {
+  currentPage: number;
+}
+
+class BaseTable extends Component<BaseTableProps, BaseTableState> {
+  constructor(props: BaseTableProps) {
+    super(props);
+    this.state = {
+      currentPage: 1,
+    };
+  }
+
   renderTableHeaders() {
     const { headers } = this.props;
     return (
@@ -27,8 +39,13 @@ class BaseTable extends Component<BaseTableProps> {
   }
 
   renderTableData() {
-    const { data, headers } = this.props;
-    return data.map((row, rowIndex) => (
+    const { data, headers, pageSize } = this.props;
+    const { currentPage } = this.state;
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const paginatedData = data.slice(startIndex, endIndex);
+
+    return paginatedData.map((row, rowIndex) => (
       <tr key={rowIndex}>
         {headers.map((header, index) => (
           <td key={index}>{row[header.key]}</td>
@@ -37,12 +54,43 @@ class BaseTable extends Component<BaseTableProps> {
     ));
   }
 
+  renderPagination() {
+    const { data, pageSize } = this.props;
+    const { currentPage } = this.state;
+    const totalPages = Math.ceil(data.length / pageSize);
+    const pageNumbers = Array.from(
+      { length: totalPages },
+      (_, index) => index + 1
+    );
+
+    return (
+      <div>
+        {pageNumbers.map((pageNumber) => (
+          <button
+            key={pageNumber}
+            onClick={() => this.goToPage(pageNumber)}
+            disabled={currentPage === pageNumber}
+          >
+            {pageNumber}
+          </button>
+        ))}
+      </div>
+    );
+  }
+
+  goToPage(pageNumber: number) {
+    this.setState({ currentPage: pageNumber });
+  }
+
   render() {
     return (
-      <table>
-        <thead>{this.renderTableHeaders()}</thead>
-        <tbody>{this.renderTableData()}</tbody>
-      </table>
+      <div>
+        <table>
+          <thead>{this.renderTableHeaders()}</thead>
+          <tbody>{this.renderTableData()}</tbody>
+        </table>
+        {this.renderPagination()}
+      </div>
     );
   }
 }
