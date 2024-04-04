@@ -201,8 +201,8 @@ class BaseTable extends Component<BaseTableProps, BaseTableState> {
     const { onQueryChange, queryState, title, description } = this.props;
     return (
       <div className="border m-4 rounded">
-        <div className="filter d-flex justify-content-between align-items-center p-4 border-bottom">
-          <div>
+        <div className="custom-header filter d-flex justify-content-between align-items-center p-4 border-bottom">
+          <div className="custom-title-header">
             <div className="fs-4 text-dark">{title}</div>
             <div className="fs-6 text-secondary">{description}</div>
           </div>
