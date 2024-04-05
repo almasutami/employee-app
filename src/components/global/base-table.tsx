@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronLeft,
@@ -28,27 +28,36 @@ interface BaseTableProps {
   onQueryChange: (query: string) => void;
   onEditRow: (row: any) => void;
 }
-
-interface BaseTableState {
-  currentPage: number;
+interface BaseTableProps {
+  headers: Header[];
+  data: RowData[];
+  pageSize: number;
+  objectName: string;
+  queryState: string;
+  title: string;
+  description: string;
+  onQueryChange: (query: string) => void;
+  onEditRow: (row: any) => void;
 }
 
-class BaseTable extends Component<BaseTableProps, BaseTableState> {
-  constructor(props: BaseTableProps) {
-    super(props);
-    this.state = {
-      currentPage: 1,
-    };
-  }
+const BaseTable: React.FC<BaseTableProps> = ({
+  headers,
+  data,
+  pageSize,
+  objectName,
+  queryState,
+  title,
+  description,
+  onQueryChange,
+  onEditRow,
+}: BaseTableProps) => {
+  const [currentPage, setCurrentPage] = useState(1);
 
-  componentDidUpdate(prevProps: BaseTableProps) {
-    if (prevProps.queryState !== this.props.queryState) {
-      this.setState({ currentPage: 1 });
-    }
-  }
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [queryState]);
 
-  renderTableHeaders() {
-    const { headers } = this.props;
+  const renderTableHeaders = () => {
     return (
       <tr>
         {headers.map((header, index) => (
@@ -56,11 +65,9 @@ class BaseTable extends Component<BaseTableProps, BaseTableState> {
         ))}
       </tr>
     );
-  }
+  };
 
-  renderTableData() {
-    const { data, headers, pageSize, objectName, onEditRow } = this.props;
-    const { currentPage } = this.state;
+  const renderTableData = () => {
     const startIndex = (currentPage - 1) * pageSize;
     const endIndex = startIndex + pageSize;
     const paginatedData = data.slice(startIndex, endIndex);
@@ -68,7 +75,7 @@ class BaseTable extends Component<BaseTableProps, BaseTableState> {
     if (data.length <= 0) {
       return (
         <tr>
-          <td className="block" colSpan={pageSize}>
+          <td className="block" colSpan={headers.length}>
             <div>No {objectName} found.</div>
           </td>
         </tr>
@@ -125,11 +132,9 @@ class BaseTable extends Component<BaseTableProps, BaseTableState> {
         })}
       </tr>
     ));
-  }
+  };
 
-  renderPagination() {
-    const { data, pageSize } = this.props;
-    const { currentPage } = this.state;
+  const renderPagination = () => {
     const totalPages = Math.ceil(data.length / pageSize);
     const pageNumbers = Array.from(
       { length: totalPages },
@@ -148,7 +153,7 @@ class BaseTable extends Component<BaseTableProps, BaseTableState> {
               }`}
               onClick={() => {
                 if (currentPage > 1) {
-                  this.goToPage(currentPage - 1);
+                  setCurrentPage(currentPage - 1);
                 }
               }}
             >
@@ -164,7 +169,7 @@ class BaseTable extends Component<BaseTableProps, BaseTableState> {
                 key={pageNumber}
                 onClick={() => {
                   if (currentPage !== pageNumber) {
-                    this.goToPage(pageNumber);
+                    setCurrentPage(pageNumber);
                   }
                 }}
               >
@@ -179,7 +184,7 @@ class BaseTable extends Component<BaseTableProps, BaseTableState> {
               }`}
               onClick={() => {
                 if (currentPage < totalPages) {
-                  this.goToPage(currentPage + 1);
+                  setCurrentPage(currentPage + 1);
                 }
               }}
             >
@@ -191,37 +196,30 @@ class BaseTable extends Component<BaseTableProps, BaseTableState> {
     } else {
       return null;
     }
-  }
+  };
 
-  goToPage(pageNumber: number) {
-    this.setState({ currentPage: pageNumber });
-  }
-
-  render() {
-    const { onQueryChange, queryState, title, description } = this.props;
-    return (
-      <div className="border m-4 rounded">
-        <div className="custom-header filter d-flex justify-content-between align-items-center p-4 border-bottom">
-          <div className="custom-title-header">
-            <div className="fs-4 text-dark">{title}</div>
-            <div className="fs-6 text-secondary">{description}</div>
-          </div>
-          <BaseInputSearch
-            placeholder="Filter by name, email, or ID"
-            value={queryState}
-            onChange={onQueryChange}
-          />
+  return (
+    <div className="border m-4 rounded">
+      <div className="custom-header filter d-flex justify-content-between align-items-center p-4 border-bottom">
+        <div className="custom-title-header">
+          <div className="fs-4 text-dark">{title}</div>
+          <div className="fs-6 text-secondary">{description}</div>
         </div>
-        <div className="overflow-x-auto p-0">
-          <table className="table p-0">
-            <thead>{this.renderTableHeaders()}</thead>
-            <tbody>{this.renderTableData()}</tbody>
-          </table>
-          {this.renderPagination()}
-        </div>
+        <BaseInputSearch
+          placeholder="Filter by name, email, or ID"
+          value={queryState}
+          onChange={onQueryChange}
+        />
       </div>
-    );
-  }
-}
+      <div className="overflow-x-auto p-0">
+        <table className="table p-0">
+          <thead>{renderTableHeaders()}</thead>
+          <tbody>{renderTableData()}</tbody>
+        </table>
+        {renderPagination()}
+      </div>
+    </div>
+  );
+};
 
 export default BaseTable;

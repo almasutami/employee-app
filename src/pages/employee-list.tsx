@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import BaseTable from "../components/global/base-table.tsx";
 import EditEmployee from "../components/employee/edit-employee.tsx";
 import employeeData from "../data/employee.json";
@@ -18,87 +18,63 @@ const employeeTableHeaders = [
   { label: "Actions", key: "" },
 ];
 
-class EmployeeListing extends React.Component {
-  state = {
-    employees: [] as Employee[],
-    currentPage: 1,
-    searchQuery: "",
-    isActiveFilter: null as boolean | null,
-    isEditModalOpen: false,
-    employeeToEdit: null as Employee | null,
+const EmployeeListing = () => {
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [employeeToEdit, setEmployeeToEdit] = useState<Employee | null>(null);
+
+  const inputHandler = (value: string) => {
+    setSearchQuery(value);
   };
 
-  inputHandler = (name: string, value: string) => {
-    this.setState({ [name]: value });
+  useEffect(() => {
+    const fetchEmployees = () => {
+      let filteredEmployees = employeeData.employees as Employee[];
+
+      if (searchQuery) {
+        filteredEmployees = filteredEmployees.filter(
+          (employee) =>
+            employee.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            employee.id?.toString().includes(searchQuery.toLowerCase()) ||
+            employee.email.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+      }
+
+      setEmployees(filteredEmployees);
+    };
+
+    fetchEmployees();
+  }, [searchQuery]);
+
+  const onEditRow = (row: Employee) => {
+    setIsEditModalOpen(true);
+    setEmployeeToEdit(row);
   };
 
-  fetchEmployees = () => {
-    let filteredEmployees = employeeData.employees as Employee[];
-
-    console.log(`search for ${this.state.searchQuery}`);
-
-    if (this.state.searchQuery) {
-      filteredEmployees = filteredEmployees.filter(
-        (employee) =>
-          employee.name
-            .toLowerCase()
-            .includes(this.state.searchQuery.toLowerCase()) ||
-          employee.id
-            ?.toString()
-            .includes(this.state.searchQuery.toLowerCase()) ||
-          employee.email
-            .toLowerCase()
-            .includes(this.state.searchQuery.toLowerCase())
-      );
-    }
-
-    this.setState({ employees: filteredEmployees });
+  const onCloseEditModal = () => {
+    setIsEditModalOpen(false);
   };
 
-  onEditRow = (row: Employee) => {
-    this.setState({ isEditModalOpen: true });
-    this.setState({ employeeToEdit: row });
-  };
+  return (
+    <div>
+      <BaseTable
+        title="Employee Listing"
+        description="View and edit your employee here"
+        headers={employeeTableHeaders}
+        data={employees}
+        onEditRow={onEditRow}
+        queryState={searchQuery}
+        onQueryChange={inputHandler}
+        pageSize={5}
+        objectName="employee"
+      />
 
-  onCloseEditModal = () => {
-    this.setState({ isEditModalOpen: false });
-  };
-
-  componentDidMount() {
-    this.fetchEmployees();
-  }
-
-  componentDidUpdate(_, prevState) {
-    if (prevState.searchQuery !== this.state.searchQuery) {
-      this.setState({ currentPage: 1 });
-      this.fetchEmployees();
-    }
-  }
-
-  render() {
-    return (
-      <div>
-        <BaseTable
-          title="Employee Listing"
-          description="View and edit your employee here"
-          headers={employeeTableHeaders}
-          data={this.state.employees}
-          onEditRow={(row: Employee) => this.onEditRow(row)}
-          queryState={this.state.searchQuery}
-          onQueryChange={(query) => this.inputHandler("searchQuery", query)}
-          pageSize={5}
-          objectName="employee"
-        />
-
-        {this.state.isEditModalOpen && (
-          <EditEmployee
-            employee={this.state.employeeToEdit}
-            onClose={this.onCloseEditModal}
-          />
-        )}
-      </div>
-    );
-  }
-}
+      {isEditModalOpen && (
+        <EditEmployee employee={employeeToEdit} onClose={onCloseEditModal} />
+      )}
+    </div>
+  );
+};
 
 export default EmployeeListing;

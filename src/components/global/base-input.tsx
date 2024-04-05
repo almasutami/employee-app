@@ -1,4 +1,4 @@
-import React, { ChangeEvent, Component } from "react";
+import React, { useState, ChangeEvent } from "react";
 
 interface BaseInputProps {
   label?: string;
@@ -7,35 +7,39 @@ interface BaseInputProps {
   onChange: (value: string) => void;
 }
 
-class BaseInput extends Component<BaseInputProps> {
-  handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { onChange } = this.props;
-    onChange(event.target.value);
+const BaseInput: React.FC<BaseInputProps> = ({
+  label,
+  value,
+  placeholder,
+  onChange,
+}) => {
+  const [inputValue, setInputValue] = useState<string>(value);
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.value;
+    setInputValue(newValue);
+    onChange(newValue);
   };
 
-  render() {
-    const { label, value, placeholder } = this.props;
-
-    return (
-      <div className="d-flex flex-column my-2">
-        {label && (
-          <div className="fw-bolder" style={{ width: "100%" }}>
-            <label>{label}</label>
-          </div>
-        )}
-        <div style={{ width: "100%" }}>
-          <input
-            className="rounded border p-2"
-            style={{ minWidth: "240px", width: "100%" }}
-            type="text"
-            value={value}
-            placeholder={placeholder}
-            onChange={this.handleChange}
-          />
+  return (
+    <div className="d-flex flex-column my-2">
+      {label && (
+        <div className="fw-bolder" style={{ width: "100%" }}>
+          <label>{label}</label>
         </div>
+      )}
+      <div style={{ width: "100%" }}>
+        <input
+          className="rounded border p-2"
+          style={{ minWidth: "240px", width: "100%" }}
+          type="text"
+          value={inputValue}
+          placeholder={placeholder}
+          onChange={handleChange}
+        />
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 export default BaseInput;
