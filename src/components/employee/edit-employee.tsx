@@ -1,6 +1,7 @@
 import React from "react";
 import { Employee } from "../../pages/employee-list";
 import BaseInput from "../global/base-input.tsx";
+import BaseSwitch from "../global/base-switch.tsx";
 
 interface EditEmployeeProps {
   employee: Employee | null;
@@ -12,7 +13,7 @@ class EditEmployee extends React.Component<EditEmployeeProps> {
     employeeForm: this.props?.employee as Employee | null,
   };
 
-  updateEmployee = (prop: string, value: string) => {
+  updateEmployee = (prop: string, value: string | boolean) => {
     const newEmployeeForm = {
       ...this.state.employeeForm,
       [prop]: value,
@@ -51,6 +52,11 @@ class EditEmployee extends React.Component<EditEmployeeProps> {
                 label="Email"
                 placeholder="Enter employee email"
                 onChange={(value) => this.updateEmployee("email", value)}
+              />
+              <BaseSwitch
+                label="Active employee"
+                value={this.state.employeeForm?.isActive || false}
+                onChange={(value) => this.updateEmployee("isActive", value)}
               />
             </div>
             <div className="modal-footer">
