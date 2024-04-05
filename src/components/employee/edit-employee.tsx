@@ -6,9 +6,14 @@ import { Employee } from "../../pages/employee-list.tsx";
 interface EditEmployeeProps {
   employee: Employee | null;
   onClose: () => void;
+  onSave: (value: Employee) => void;
 }
 
-const EditEmployee: React.FC<EditEmployeeProps> = ({ employee, onClose }) => {
+const EditEmployee: React.FC<EditEmployeeProps> = ({
+  employee,
+  onClose,
+  onSave,
+}) => {
   const [employeeForm, setEmployeeForm] = useState<Employee | null>(employee);
 
   const updateEmployee = (prop: string, value: string | boolean) => {
@@ -64,6 +69,7 @@ const EditEmployee: React.FC<EditEmployeeProps> = ({ employee, onClose }) => {
               type="button"
               className="btn btn-sm btn-primary"
               style={{ fontSize: "14px" }}
+              onClick={() => onSave(employeeForm as Employee)}
             >
               Save
             </button>

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import BaseTable from "../components/global/base-table.tsx";
 import EditEmployee from "../components/employee/edit-employee.tsx";
-import employeeData from "../data/employee.json";
+import { connect } from "react-redux";
+import { updateEmployees } from "../redux/actions/employee.tsx";
+import { InitialStateProps } from "../redux/reducers/employee.tsx";
 
 export interface Employee {
   id: number;
@@ -18,7 +20,7 @@ const employeeTableHeaders = [
   { label: "Actions", key: "" },
 ];
 
-const EmployeeListing = () => {
+const EmployeeListing = ({ employeeList, updateEmployees }) => {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -30,9 +32,9 @@ const EmployeeListing = () => {
 
   useEffect(() => {
     const fetchEmployees = () => {
-      let filteredEmployees = employeeData.employees as Employee[];
+      let filteredEmployees = employeeList as Employee[];
 
-      if (searchQuery) {
+      if (searchQuery && filteredEmployees) {
         filteredEmployees = filteredEmployees.filter(
           (employee) =>
             employee.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -41,11 +43,11 @@ const EmployeeListing = () => {
         );
       }
 
-      setEmployees(filteredEmployees);
+      setEmployees(filteredEmployees || []);
     };
 
     fetchEmployees();
-  }, [searchQuery]);
+  }, [searchQuery, employeeList]);
 
   const onEditRow = (row: Employee) => {
     setIsEditModalOpen(true);
@@ -53,6 +55,11 @@ const EmployeeListing = () => {
   };
 
   const onCloseEditModal = () => {
+    setIsEditModalOpen(false);
+  };
+
+  const onSaveEmployee = (employee: Employee) => {
+    updateEmployees(employee.id, employee);
     setIsEditModalOpen(false);
   };
 
@@ -71,10 +78,24 @@ const EmployeeListing = () => {
       />
 
       {isEditModalOpen && (
-        <EditEmployee employee={employeeToEdit} onClose={onCloseEditModal} />
+        <EditEmployee
+          employee={employeeToEdit}
+          onClose={onCloseEditModal}
+          onSave={onSaveEmployee}
+        />
       )}
     </div>
   );
 };
 
-export default EmployeeListing;
+const mapStateToProps = (state: InitialStateProps) => {
+  return {
+    employeeList: state.employee.employeeList,
+  };
+};
+
+const mapDispatchToProps = {
+  updateEmployees,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(EmployeeListing);

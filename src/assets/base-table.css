@@ -34,3 +34,12 @@
     align-items: center !important;
   }
 }
+
+.update-button {
+  background-color: #525252;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}

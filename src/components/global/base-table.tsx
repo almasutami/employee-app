@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronLeft,
   faChevronRight,
-  faPencil,
 } from "@fortawesome/free-solid-svg-icons";
 import "../../assets/base-table.css";
 import BaseInputSearch from "./base-input-search.tsx";
@@ -85,22 +84,20 @@ const BaseTable: React.FC<BaseTableProps> = ({
     return paginatedData.map((row, rowIndex) => (
       <tr key={rowIndex}>
         {headers.map((header, index) => {
-          if (header.label === "Actions") {
+          if (header.label === "Actions" && row?.isActive) {
             return (
               <td key={index}>
-                <button
-                  className="rounded"
-                  style={{
-                    background: "inherit",
-                    border: "0",
-                    color: "#525252",
-                  }}
+                <span
+                  style={{ fontSize: "14px" }}
+                  className="px-2 py-1 rounded bg-primary text-white rounded btn-sm update-button"
                   onClick={() => onEditRow(row)}
                 >
-                  <FontAwesomeIcon size="sm" icon={faPencil} />
-                </button>
+                  Update
+                </span>
               </td>
             );
+          } else if (header.label === "Actions") {
+            return <td key={index}></td>;
           }
           if (header.key === "isActive") {
             if (row[header.key]) {
