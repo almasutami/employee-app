@@ -6,6 +6,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "../../assets/base-table.css";
 import BaseInputSearch from "./base-input-search.tsx";
+import type { Employee } from "../../pages/employee-list.tsx";
 
 interface RowData {
   [key: string]: any;
@@ -25,18 +26,8 @@ interface BaseTableProps {
   title: string;
   description: string;
   onQueryChange: (query: string) => void;
-  onEditRow: (row: any) => void;
-}
-interface BaseTableProps {
-  headers: Header[];
-  data: RowData[];
-  pageSize: number;
-  objectName: string;
-  queryState: string;
-  title: string;
-  description: string;
-  onQueryChange: (query: string) => void;
-  onEditRow: (row: any) => void;
+  onEditRow: (row: Employee) => void;
+  onDeleteRow: (row: Employee) => void;
 }
 
 const BaseTable: React.FC<BaseTableProps> = ({
@@ -49,6 +40,7 @@ const BaseTable: React.FC<BaseTableProps> = ({
   description,
   onQueryChange,
   onEditRow,
+  onDeleteRow,
 }: BaseTableProps) => {
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -90,14 +82,24 @@ const BaseTable: React.FC<BaseTableProps> = ({
                 <span
                   style={{ fontSize: "14px" }}
                   className="px-2 py-1 rounded bg-primary text-white rounded btn-sm update-button"
-                  onClick={() => onEditRow(row)}
+                  onClick={() => onEditRow(row as Employee)}
                 >
                   Update
                 </span>
               </td>
             );
-          } else if (header.label === "Actions") {
-            return <td key={index}></td>;
+          } else if (header.label === "Actions" && !row?.isActive) {
+            return (
+              <td key={index}>
+                <span
+                  style={{ fontSize: "14px" }}
+                  className="px-2 py-1 rounded bg-warning text-white rounded btn-sm update-button"
+                  onClick={() => onDeleteRow(row as Employee)}
+                >
+                  Delete
+                </span>
+              </td>
+            );
           }
           if (header.key === "isActive") {
             if (row[header.key]) {

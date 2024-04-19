@@ -22,6 +22,11 @@ const reducer = (state = initialState, action: any) => {
         }
       });
       return { ...state, employeeList: updatedEmployeeList };
+    case "EMPLOYEE_DELETE":
+      const updatedEmployeeListAfterDelete = state.employeeList.filter(
+        (employee) => employee.id !== action.payload.employeeId
+      );
+      return { ...state, employeeList: updatedEmployeeListAfterDelete };
     default:
       return state;
   }

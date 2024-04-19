@@ -8,3 +8,12 @@ export const updateEmployees = (employeeId: number, employeeData: Employee) => {
     });
   };
 };
+
+export const deleteEmployee = (employeeId: number) => {
+  return (dispatch) => {
+    dispatch({
+      type: "EMPLOYEE_DELETE",
+      payload: { employeeId },
+    });
+  };
+};
